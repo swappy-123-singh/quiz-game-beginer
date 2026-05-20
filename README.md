@@ -1,0 +1,1 @@
+hey whoever read this , this is my first project , it has been a week  learning coding, this is my work by using ifelse ladder , during my new coding journey i will learn new new things . this is just testing project from my side  
