@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>India Quiz — by Swapnil</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --saffron:#FF9933;
+  --green:#138808;
+  --navy:#000080;
+  --gold:#F5A623;
+  --soft:#FFF8F0;
+  --card:#FFFFFF;
+  --shadow:0 8px 32px rgba(0,0,128,0.12);
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--soft);
+  min-height:100vh;
+  padding-bottom:2rem;
+}
+.app{
+  max-width:480px;
+  margin:0 auto;
+  padding:1.25rem 1rem;
+}
+.tricolor-bar{
+  height:6px;
+  background:linear-gradient(to right,var(--saffron) 33.3%,#fff 33.3% 66.6%,var(--green) 66.6%);
+  border-radius:99px;
+  margin-bottom:1.5rem;
+}
+.screen{display:none;animation:fadeUp 0.4s ease both;}
+.screen.active{display:block;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.logo{text-align:center;margin-bottom:1.5rem;}
+.logo .flag{font-size:3rem;display:block;margin-bottom:0.5rem;}
+.logo h1{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;color:var(--navy);}
+.logo .sub{font-size:14px;color:#777;margin-top:4px;}
+.logo .credit{font-size:12px;color:#aaa;margin-top:6px;}
+
+.card{
+  background:var(--card);
+  border-radius:20px;
+  padding:1.5rem;
+  box-shadow:var(--shadow);
+  margin-bottom:1rem;
+}
+.section-title{
+  font-family:'Baloo 2',cursive;
+  font-size:1.05rem;
+  font-weight:700;
+  color:var(--navy);
+  margin-bottom:0.75rem;
+}
+
+input[type=text]{
+  width:100%;
+  padding:13px 16px;
+  border:2px solid #E0E0E0;
+  border-radius:14px;
+  font-family:'Nunito',sans-serif;
+  font-size:16px;
+  color:var(--navy);
+  outline:none;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+input[type=text]:focus{border-color:var(--saffron);}
+
+.btn-primary{
+  width:100%;
+  padding:14px;
+  background:var(--navy);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-family:'Baloo 2',cursive;
+  font-size:1.1rem;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:1rem;
+  transition:transform 0.15s,background 0.2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-primary:active{transform:scale(0.97);background:#0000aa;}
+
+.rules-list{list-style:none;}
+.rules-list li{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:9px 0;
+  font-size:14px;
+  color:#444;
+  border-bottom:1px solid #F0F0F0;
+}
+.rules-list li:last-child{border-bottom:none;}
+.rule-num{
+  background:var(--saffron);
+  color:#fff;
+  border-radius:50%;
+  width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+  flex-shrink:0;margin-top:1px;
+}
+
+.q-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:0.75rem;
+}
+.q-counter{font-size:13px;color:#888;font-weight:700;letter-spacing:0.3px;}
+.score-badge{
+  background:var(--navy);
+  color:#fff;
+  padding:4px 14px;
+  border-radius:99px;
+  font-size:13px;
+  font-weight:700;
+}
+.progress-track{
+  height:7px;
+  background:#EEE;
+  border-radius:99px;
+  margin-bottom:1.25rem;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(to right,var(--saffron),var(--green));
+  border-radius:99px;
+  transition:width 0.5s ease;
+}
+
+.q-text{
+  font-family:'Baloo 2',cursive;
+  font-size:1.15rem;
+  font-weight:700;
+  color:var(--navy);
+  line-height:1.4;
+  margin-bottom:1.25rem;
+}
+
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 16px;
+  border:2px solid #EBEBEB;
+  border-radius:14px;
+  cursor:pointer;
+  transition:border-color 0.18s,background 0.18s,transform 0.12s;
+  background:#fff;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.opt:active:not(.disabled){transform:scale(0.98);}
+.opt-letter{
+  width:32px;height:32px;
+  border-radius:50%;
+  background:#F2F2F2;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#555;
+  flex-shrink:0;
+  transition:background 0.18s,color 0.18s;
+}
+.opt-text{font-size:14px;color:#333;font-weight:600;line-height:1.3;}
+.opt.correct{border-color:var(--green);background:#F0FFF4;}
+.opt.correct .opt-letter{background:var(--green);color:#fff;}
+.opt.wrong{border-color:#E53935;background:#FFF5F5;}
+.opt.wrong .opt-letter{background:#E53935;color:#fff;}
+.opt.reveal{border-color:var(--green);background:#F0FFF4;}
+.opt.reveal .opt-letter{background:var(--green);color:#fff;}
+.opt.disabled{cursor:default;pointer-events:none;}
+
+.feedback{
+  text-align:center;
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:14px;
+  margin-top:1rem;
+  display:none;
+  animation:fadeUp 0.3s ease both;
+}
+.feedback.show{display:block;}
+.feedback.correct{background:#E8F5E9;color:#2E7D32;}
+.feedback.wrong{background:#FFEBEE;color:#C62828;}
+
+.next-btn{
+  width:100%;
+  padding:13px;
+  background:var(--saffron);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-family:'Baloo 2',cursive;
+  font-size:1rem;
+  font-weight:700;
+  cursor:pointer;
+  margin-top:12px;
+  display:none;
+  -webkit-tap-highlight-color:transparent;
+  animation:fadeUp 0.3s 0.15s ease both;
+}
+.next-btn.show{display:block;}
+.next-btn:active{transform:scale(0.97);}
+
+.result-circle{
+  width:120px;height:120px;
+  border-radius:50%;
+  background:var(--navy);
+  color:#fff;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  margin:0 auto 1.25rem;
+  box-shadow:0 8px 28px rgba(0,0,128,0.22);
+}
+.big-score{font-family:'Baloo 2',cursive;font-size:2.4rem;font-weight:800;line-height:1;}
+.out-of{font-size:12px;opacity:0.7;margin-top:2px;}
+.res-title{
+  font-family:'Baloo 2',cursive;
+  font-size:1.4rem;font-weight:800;
+  color:var(--navy);
+  text-align:center;margin-bottom:6px;
+}
+.res-sub{font-size:14px;color:#666;text-align:center;margin-bottom:1.25rem;line-height:1.5;}
+
+.breakdown{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
+.bd-row{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:12px;font-size:13px;
+}
+.bd-row.pass{background:#E8F5E9;color:#2E7D32;}
+.bd-row.fail{background:#FFEBEE;color:#C62828;}
+.bd-icon{font-size:15px;flex-shrink:0;}
+.bd-q{font-weight:600;flex:1;line-height:1.3;}
+
+.btn-retry{
+  width:100%;padding:13px;
+  background:var(--green);color:#fff;
+  border:none;border-radius:14px;
+  font-family:'Baloo 2',cursive;
+  font-size:1rem;font-weight:700;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-retry:active{transform:scale(0.97);}
+
+.welcome-name{font-family:'Baloo 2',cursive;color:var(--saffron);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="tricolor-bar"></div>
+
+  <!-- WELCOME SCREEN -->
+  <div class="screen active" id="screen-welcome">
+    <div class="logo">
+      <span class="flag">🇮🇳</span>
+      <h1>India Quiz</h1>
+      <div class="sub">Test your knowledge of India</div>
+      <div class="credit">Made by Swapnil</div>
+    </div>
+    <div class="card">
+      <div class="section-title">What's your name?</div>
+      <input type="text" id="name-input" placeholder="Enter your name..." maxlength="30"/>
+      <button class="btn-primary" onclick="startRules()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- RULES SCREEN -->
+  <div class="screen" id="screen-rules">
+    <div class="logo">
+      <h1>Welcome, <span class="welcome-name" id="display-name"></span>!</h1>
+      <div class="sub">Read the rules before we begin</div>
+    </div>
+    <div class="card">
+      <div class="section-title">Quiz Rules</div>
+      <ul class="rules-list">
+        <li><span class="rule-num">1</span>There will be 5 questions in the quiz</li>
+        <li><span class="rule-num">2</span>Each question has 4 options (A, B, C, D)</li>
+        <li><span class="rule-num">3</span>Tap the correct option</li>
+        <li><span class="rule-num">4</span>Each correct answer gives you 1 point</li>
+        <li><span class="rule-num">5</span>No negative marking for wrong answers</li>
+      </ul>
+      <button class="btn-primary" onclick="startQuiz()">Start Quiz 🚀</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="screen-quiz">
+    <div class="q-header">
+      <span class="q-counter" id="q-counter">Question 1 of 5</span>
+      <span class="score-badge" id="score-live">Score: 0</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+    <div class="card">
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options-wrap"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="screen-result">
+    <div class="card">
+      <div class="result-circle">
+        <div class="big-score" id="res-score">0</div>
+        <div class="out-of">out of 5</div>
+      </div>
+      <div class="res-title" id="res-title"></div>
+      <div class="res-sub" id="res-sub"></div>
+      <div class="breakdown" id="breakdown"></div>
+      <button class="btn-retry" onclick="restart()">Play Again 🔁</button>
+    </div>
+  </div>
+
+</div>
+<script>
+const questions = [
+  {
+    q: "What is the capital of India?",
+    opts: ["Delhi", "Mumbai", "Kolkata", "Chennai"],
+    ans: 0
+  },
+  {
+    q: "Who is the President of India?",
+    opts: ["Droupadi Murmu", "Narendra Modi", "Amit Shah", "Arun Jaitley"],
+    ans: 0
+  },
+  {
+    q: "Who is the Prime Minister of India?",
+    opts: ["Narendra Modi", "Amit Shah", "Arun Jaitley", "Manmohan Singh"],
+    ans: 0
+  },
+  {
+    q: "Who is the Chief Minister of Delhi?",
+    opts: ["Rekha Gupta", "Arvind Kejriwal", "Manish Sisodia", "Amit Shah"],
+    ans: 0
+  },
+  {
+    q: "Who is the Chief Minister of Uttar Pradesh?",
+    opts: ["Yogi Adityanath", "Akhilesh Yadav", "Mayawati", "Mulayam Singh Yadav"],
+    ans: 0
+  }
+];
+
+let playerName = "", current = 0, score = 0, answered = false, userAnswers = [];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startRules() {
+  const n = document.getElementById('name-input').value.trim();
+  if (!n) { document.getElementById('name-input').focus(); return; }
+  playerName = n;
+  document.getElementById('display-name').textContent = playerName;
+  showScreen('screen-rules');
+}
+
+function startQuiz() {
+  current = 0; score = 0; answered = false; userAnswers = [];
+  loadQuestion();
+  showScreen('screen-quiz');
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  answered = false;
+  document.getElementById('q-counter').textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
+  document.getElementById('score-live').textContent = 'Score: ' + score;
+  document.getElementById('prog-fill').style.width = ((current / questions.length) * 100) + '%';
+  document.getElementById('q-text').textContent = q.q;
+  const letters = ['A','B','C','D'];
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML = '';
+  q.opts.forEach(function(opt, i) {
+    const btn = document.createElement('div');
+    btn.className = 'opt';
+    btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span class="opt-text">' + opt + '</span>';
+    btn.addEventListener('click', function(){ choose(i); });
+    wrap.appendChild(btn);
+  });
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+  const nb = document.getElementById('next-btn');
+  nb.className = 'next-btn';
+  nb.textContent = current === questions.length - 1 ? 'See Results →' : 'Next Question →';
+}
+
+function choose(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(function(o){ o.classList.add('disabled'); });
+  userAnswers.push(i);
+  const fb = document.getElementById('feedback');
+  if (i === q.ans) {
+    opts[i].classList.add('correct');
+    score++;
+    fb.textContent = '✓  Correct! Well done!';
+    fb.className = 'feedback correct show';
+  } else {
+    opts[i].classList.add('wrong');
+    opts[q.ans].classList.add('reveal');
+    fb.textContent = '✗  Wrong! Correct answer: ' + q.opts[q.ans];
+    fb.className = 'feedback wrong show';
+  }
+  document.getElementById('score-live').textContent = 'Score: ' + score;
+  document.getElementById('next-btn').classList.add('show');
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showResult();
+  else loadQuestion();
+}
+
+function showResult() {
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('res-score').textContent = score;
+  const pct = (score / questions.length) * 100;
+  let title, sub;
+  if (pct === 100) { title = "Perfect Score! 🏆"; sub = "Outstanding, " + playerName + "! You know India really well!"; }
+  else if (pct >= 60) { title = "Well Done! 👏"; sub = "Good performance, " + playerName + ". Keep learning!"; }
+  else { title = "Keep Practicing! 📚"; sub = "Don't give up, " + playerName + ". Try again!"; }
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-sub').textContent = sub;
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  questions.forEach(function(q, i) {
+    const pass = userAnswers[i] === q.ans;
+    const row = document.createElement('div');
+    row.className = 'bd-row ' + (pass ? 'pass' : 'fail');
+    row.innerHTML = '<span class="bd-icon">' + (pass ? '✓' : '✗') + '</span><span class="bd-q">Q' + (i+1) + ': ' + q.q + '</span>';
+    bd.appendChild(row);
+  });
+  showScreen('screen-result');
+}
+
+function restart() {
+  document.getElementById('name-input').value = '';
+  showScreen('screen-welcome');
+}
+
+document.getElementById('name-input').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') startRules();
+});
+</script>
+</body>
+</html>
